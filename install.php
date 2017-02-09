@@ -7,6 +7,7 @@ $sql = 'CREATE TABLE IF NOT EXISTS `' . OW_DB_PREFIX . 'cocreation_room` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255),
   `ownerId` int(11) NOT NULL,
+  `albumId` int(11),
   `name` varchar(255),
   `subject` varchar(255),
   `description` varchar(255),

@@ -78,7 +78,11 @@ define( function(require,exports,module){
                 case 'add_geo_point':
                     this.addGeoPoint();
                     break;
+                case 'add_new_photo':
+                    this.addNewPhoto();
+                    break;
             };
+
         },
 
         sortRows:function(){
@@ -87,6 +91,11 @@ define( function(require,exports,module){
 
         addGeoPoint:function(){
             top.postMessage("open-select-merker-map_event", 'http://' + window.location.hostname);
+        },
+
+        addNewPhoto:function () {
+            top.postMessage("open-select-photo_event", 'http://' + window.location.hostname);
+
         }
     });
 

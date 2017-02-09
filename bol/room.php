@@ -13,4 +13,5 @@ class COCREATION_BOL_Room extends OW_Entity
     public $invitationText;
     public $isOpen;
     public $timestamp;
+   public $albumId;
 }

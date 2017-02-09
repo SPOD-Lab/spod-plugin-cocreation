@@ -1,23 +1,23 @@
 $(document).ready(function() {
 
-   /* window.addEventListener('cocreation-paper-card-controllet_delete', function (e) {
-        var c = confirm(OW.getLanguageText('cocreation', 'confirm_delete_datalet'));
-        if (c == true) {
-            $.post(ODE.ajax_coocreation_room_delete_datalet,
-                {
-                    roomId          : e.detail.roomId
-                },
-                function (data, status) {
-                    data = JSON.parse(data);
-                    if (data.status == "ok") {
-                    } else {
-                        OW.info(OW.getLanguageText('cocreation', 'room_delete_fail'));
-                    }
-                }
-            );
-        }
-    });*/
-   window.addEventListener('metadata-list-controllet_update-metadata', function(e){
+    /* window.addEventListener('cocreation-paper-card-controllet_delete', function (e) {
+     var c = confirm(OW.getLanguageText('cocreation', 'confirm_delete_datalet'));
+     if (c == true) {
+     $.post(ODE.ajax_coocreation_room_delete_datalet,
+     {
+     roomId          : e.detail.roomId
+     },
+     function (data, status) {
+     data = JSON.parse(data);
+     if (data.status == "ok") {
+     } else {
+     OW.info(OW.getLanguageText('cocreation', 'room_delete_fail'));
+     }
+     }
+     );
+     }
+     });*/
+    window.addEventListener('metadata-list-controllet_update-metadata', function(e){
         var metadata = JSON.parse(e.detail.metadata);
         $.post(ODE.ajax_coocreation_room_update_metadata,
             {
@@ -29,13 +29,13 @@ $(document).ready(function() {
             function (data, status) {
                 COCREATION.metadata = metadata;
                 /*var response = JSON.parse(data);
-                if(response.status == "ok"){
-                    room.$.syncMessage.innerHTML = OW.getLanguageText('cocreation', 'metadata_successfully_saved');
-                    room.$.syncToast.show();
-                }else{
-                    room.$.syncMessage.innerHTML = OW.getLanguageText('cocreation', 'error_metadata_updates');
-                    room.$.syncToast.show();
-                }*/
+                 if(response.status == "ok"){
+                 room.$.syncMessage.innerHTML = OW.getLanguageText('cocreation', 'metadata_successfully_saved');
+                 room.$.syncToast.show();
+                 }else{
+                 room.$.syncMessage.innerHTML = OW.getLanguageText('cocreation', 'error_metadata_updates');
+                 room.$.syncToast.show();
+                 }*/
             }
         );
     });
@@ -65,7 +65,13 @@ $(document).ready(function() {
                     title: ''
                 });
                 break;
-        }
+            case 'open-select-photo_event':
+                ODE.pluginPreview = "cocreation";
+                previewFloatBox = OW.ajaxFloatBox('COCREATION_CMP_AddPhoto', {albumId: COCREATION.album} , {width:'100%', height:'60vh', iconClass:'ow_ic_lens', title:''});
+
+
+                break;   }
+
     });
 
     window.addEventListener('datalet-slider-controllet_attached', function(e){
@@ -79,6 +85,9 @@ $(document).ready(function() {
     window.addEventListener('metadata-list-controllet_attached', function(e){
         room.$.metadata_component.setMetadata(COCREATION.metadata);
     });
+
+
+
 });
 
 room.splitScreenActive          = false;
@@ -140,12 +149,15 @@ room.handleSelectUIMode = function(mode){
             room.$.split_checkbox.checked = !room.$.split_checkbox.checked;
             room.handleSplitScreen(room.$.split_checkbox);
             break;
+        case 'Photo':
+
+            window.location='/cocreation/album/'+ COCREATION.ownerId +'/' + COCREATION.album;
     }
 
 };
 
 room.handleSplitScreen = function(e){
-   room.splitScreenActive  = e.checked;
+    room.splitScreenActive  = e.checked;
 
     room.$.spreadsheet.style.visibility = "visible";
     room.$.metadata.style.visibility    = 'hidden';
@@ -154,39 +166,39 @@ room.handleSplitScreen = function(e){
     room.$.datalets.style.display       = 'none';
     room.$.info.style.visibility        = 'hidden';
 
-   if(room.splitScreenActive){//active split screen
-       room.$.dataset_menu_item.disabled = true;
+    if(room.splitScreenActive){//active split screen
+        room.$.dataset_menu_item.disabled = true;
 
-       room.$.datalets_slider._refresh();
+        room.$.datalets_slider._refresh();
 
-       if(room.current_selected_container == null){
-           room.current_selected_container  = room.$.metadata;
-           room.$.section_menu.selected     = 1;
-       }
+        if(room.current_selected_container == null){
+            room.current_selected_container  = room.$.metadata;
+            room.$.section_menu.selected     = 1;
+        }
 
-       if(room.current_selected_container == room.$.datalets)
-          room.current_selected_container.style.display = "block";
-       else
-          room.current_selected_container.style.visibility = "visible";
+        if(room.current_selected_container == room.$.datalets)
+            room.current_selected_container.style.display = "block";
+        else
+            room.current_selected_container.style.visibility = "visible";
 
-       $(room.$.spreadsheet).addClass("split_size_card_left");
-       $(room.$.metadata).addClass("split_size_card_right");
-       $(room.$.notes).addClass("split_size_card_right");
-       $(room.$.discussion).addClass("split_size_card_right");
-       $(room.$.datalets).addClass("split_size_card_right");
-       $(room.$.info).addClass("split_size_card_right");
-   }else{
-       room.$.dataset_menu_item.disabled = false;
-       room.$.section_menu.selected      = 0;
-       room.current_selected_container   = null;
+        $(room.$.spreadsheet).addClass("split_size_card_left");
+        $(room.$.metadata).addClass("split_size_card_right");
+        $(room.$.notes).addClass("split_size_card_right");
+        $(room.$.discussion).addClass("split_size_card_right");
+        $(room.$.datalets).addClass("split_size_card_right");
+        $(room.$.info).addClass("split_size_card_right");
+    }else{
+        room.$.dataset_menu_item.disabled = false;
+        room.$.section_menu.selected      = 0;
+        room.current_selected_container   = null;
 
-       $(room.$.spreadsheet).removeClass("split_size_card_left");
-       $(room.$.metadata).removeClass("split_size_card_right");
-       $(room.$.notes).removeClass("split_size_card_right");
-       $(room.$.discussion).removeClass("split_size_card_right");
-       $(room.$.datalets).removeClass("split_size_card_right");
-       $(room.$.info).removeClass("split_size_card_right");
-   }
+        $(room.$.spreadsheet).removeClass("split_size_card_left");
+        $(room.$.metadata).removeClass("split_size_card_right");
+        $(room.$.notes).removeClass("split_size_card_right");
+        $(room.$.discussion).removeClass("split_size_card_right");
+        $(room.$.datalets).removeClass("split_size_card_right");
+        $(room.$.info).removeClass("split_size_card_right");
+    }
 };
 
 room.current_dataset = "";
@@ -244,4 +256,11 @@ room.loadDiscussion = function(){
             onload.setAttribute("type","text/javascript");
             onload.innerHTML = data.onloadScript;
         });
+
+
+
+
 };
+
+
+

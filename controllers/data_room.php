@@ -4,10 +4,14 @@ class COCREATION_CTRL_DataRoom extends OW_ActionController
 {
     public function index(array $params)
     {
+
+
         if ( !OW::getUser()->isAuthenticated() )
         {
             throw new AuthenticateException();
         }
+
+
 
         OW::getDocument()->addScript(OW::getPluginManager()->getPlugin('spodtchat')->getStaticJsUrl() . 'vendor/livequery-1.1.1/jquery.livequery.js');
 
@@ -15,8 +19,17 @@ class COCREATION_CTRL_DataRoom extends OW_ActionController
         OW::getDocument()->addScript(OW::getPluginManager()->getPlugin('cocreation')->getStaticJsUrl() . 'cocreation.js');
         OW::getDocument()->addScript(OW::getPluginManager()->getPlugin('cocreation')->getStaticJsUrl() . 'cocreation-room.js');
         OW::getDocument()->addScript(OW::getPluginManager()->getPlugin('cocreation')->getStaticJsUrl() . 'cocreation-data.js');
+
         OW::getDocument()->addStyleSheet(OW::getPluginManager()->getPlugin('cocreation')->getStaticJsUrl() . 'perfect-scrollbar/css/perfect-scrollbar.css');
         OW::getDocument()->getMasterPage()->setTemplate(OW::getPluginManager()->getPlugin('cocreation')->getRootDir() . 'master_pages/general.html');
+
+
+        OW::getDocument()->addScript(OW::getPluginManager()->getPlugin('cocreation')->getStaticJsUrl() . 'browse_photo.js');
+       // OW::getDocument()->addOnloadScript(';window.browsePhoto.init();');
+
+
+       // OW::getDocument()->addScript(OW::getPluginManager()->getPlugin('photo')->getStaticJsUrl() . 'utils.js');
+       // QW::getDocument()->addScript(OW::getPluginManager()->getPlugin('cocreation')->getStaticJsUrl()  . 'browse_photo.js');
         $this->assign('components_url', SPODPR_COMPONENTS_URL);
 
         if(COCREATION_BOL_Service::getInstance()->isMemberJoinedToRoom(OW::getUser()->getId(), intval($params['roomId'])))
@@ -132,8 +145,10 @@ class COCREATION_CTRL_DataRoom extends OW_ActionController
                 ODE.ajax_coocreation_room_publish_dataset     = {$ajax_coocreation_room_publish_dataset}
                 ODE.ajax_coocreation_room_get_html_note       = {$ajax_coocreation_room_get_html_note}
                 ODE.ajax_coocreation_room_delete_user         = {$ajax_coocreation_room_delete_user}
+                ODE.ajax_coocreation_room_get_photo           = {$ajax_coocreation_room_get_photo}
                 COCREATION.sheetName                          = {$sheetName}
                 COCREATION.roomId                             = {$roomId}
+                COCREATION.ownerId                            = {$ownerId}
                 COCREATION.room_type                          = "data"
                 COCREATION.entity_type                        = {$entity_type}
                 COCREATION.room_members                       = {$room_members}
@@ -141,25 +156,36 @@ class COCREATION_CTRL_DataRoom extends OW_ActionController
                 COCREATION.metadata                           = {$room_metadata}
                 COCREATION.user_id                            = {$userId}
                 COCREATION.info                               = {$roomInfo}
+                COCREATION.album                              = {$album}
             ', array(
                'ajax_coocreation_room_get_datalets'        => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'getRoomDatalets'),
                'ajax_coocreation_room_get_array_sheetdata' => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'getArrayOfObjectSheetData') . "?sheetName=" . $sheetName,
-               'ajax_coocreation_room_update_metadata'     => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'updateMetadata'),
+               'ajax_coocreation_room_update_metadata'      => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'updateMetadata'),
                'ajax_coocreation_room_add_datalet'         => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'addDataletToRoom')          . "?roomId="  . $params['roomId'],
                'ajax_coocreation_room_delete_datalet'      => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'deleteDataletFromRoom'),
                'ajax_coocreation_room_publish_dataset'     => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'publishDataset'),
                'ajax_coocreation_room_get_html_note'       => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'getNoteHTMLByPadIDApiUrl')  . "?noteUrl="  . $noteUrl,
                'ajax_coocreation_room_delete_user'         => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'deleteMemberFromRoom'),
+               'ajax_coocreation_room_get_photo'          => OW::getRouter()->urlFor('COCREATION_CTRL_Ajax', 'getPhoto'),
                'sheetName'                                 => $sheetName,
                'roomId'                                    => $params['roomId'],
+               'ownerId'                                   => $room->ownerId,
                'entity_type'                               => COCREATION_BOL_Service::ROOM_ENTITY_TYPE,
                'room_members'                              => json_encode($membersIds),
                'roomDatalets'                              => $room_datalets,
                'room_metadata'                             => json_encode($metadataObj),
                'userId'                                    => OW::getUser()->getId(),
                'roomInfo'                                  => json_encode($info),
+               'album'                                     => $room->albumId,
         ));
+
         OW::getDocument()->addOnloadScript($js);
+        $url=$_GET["url"];
+       if(isset($url)){
+        OW::getDocument()->addOnloadScript(" alert('$url'); ODE.pluginPreview = \"cocreation\";
+                previewFloatBox = OW.ajaxFloatBox('COCREATION_CMP_AddPhoto', {url: '$url'} , {width:'100%', height:'60vh', iconClass:'ow_ic_lens', title:''});
+");}
+
         OW::getDocument()->addOnloadScript("data_room.init();");
 
         OW::getLanguage()->addKeyForJs('cocreation', 'confirm_delete_datalet');
@@ -167,6 +193,11 @@ class COCREATION_CTRL_DataRoom extends OW_ActionController
         OW::getLanguage()->addKeyForJs('cocreation', 'dataset_successfully_published');
         OW::getLanguage()->addKeyForJs('cocreation', 'metadata_successfully_saved');
         OW::getLanguage()->addKeyForJs('cocreation', 'error_metadata_updates');
+
+
+
+
+
     }
 
 }

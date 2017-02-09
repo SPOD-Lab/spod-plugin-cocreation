@@ -19,6 +19,15 @@ class COCREATION_CTRL_Ajax extends OW_ActionController
             exit;
         }
 
+        $album = new PHOTO_BOL_PhotoAlbum();
+        $album->name = $clean['name'];
+        $album->userId =  OW::getUser()->getId();
+        $album->entityType = 'user';
+        $album->createDatetime = time();
+        $album->description =  $clean['description'];
+
+        $albumId =  PHOTO_BOL_PhotoAlbumService::getInstance()->addAlbum($album);
+
         $room = COCREATION_BOL_Service::getInstance()->addRoom(
             OW::getUser()->getId(),
             $clean['name'],
@@ -30,7 +39,8 @@ class COCREATION_CTRL_Ajax extends OW_ActionController
             $clean['invitation_text'],
             empty($clean['is_open']) ? 0 : 1,
             implode("#######", $clean['users_value']),
-            $clean['room_type']
+            $clean['room_type'],
+            $albumId
         );
 
         $randomString = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
@@ -69,6 +79,14 @@ class COCREATION_CTRL_Ajax extends OW_ActionController
                 }
             }
         }
+
+
+
+
+        //$js = UTIL_JsGenerator::composeJsString('COCREATION.albumID = {$albumID}',array('albumID' => $album->id ,));
+        //OW::getDocument()->addOnloadScript($js);
+
+
 
         COCREATION_CLASS_EventHandler::getInstance()->sendNotificationRoomCreated($room);
 
@@ -572,6 +590,44 @@ class COCREATION_CTRL_Ajax extends OW_ActionController
         echo json_encode($data);
         exit;
     }
-    /* AND */
+
+
+   public function getPhotoUrl(){
+        $clean = ODE_CLASS_InputFilter::getInstance()->sanitizeInputs($_REQUEST);
+        if ($clean == null){
+            OW::getFeedback()->info(OW::getLanguage()->text('cocreationes', 'insane_values'));
+            exit;
+        }
+
+        $photoId=$clean['id'];
+
+        $photoService=PHOTO_BOL_PhotoService::getInstance();
+        $url=$photoService->getPhotoUrl($photoId);
+         echo $url;
+
+
+
+        exit;
+
+
+    }
+
+    public function getRoomId(){
+        $clean = ODE_CLASS_InputFilter::getInstance()->sanitizeInputs($_REQUEST);
+        if ($clean == null){
+            OW::getFeedback()->info(OW::getLanguage()->text('cocreationes', 'insane_values'));
+            exit;
+        }
+
+        $albumId=$clean['albumId'];
+        $room=COCREATION_BOL_Service::getInstance()->getRoomIdByAlbumId($albumId);
+
+       echo json_decode($room);
+
+        exit;
+    }
+
+
+
 
 }

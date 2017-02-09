@@ -422,6 +422,10 @@
 
 
 </style>
+
+
+
+
 <template id="data_room" is="dom-bind">
     {if $isMember == false}
     <div id="overlay">
@@ -474,6 +478,12 @@
                             </paper-item-body>
                         </paper-item>
 
+                        <paper-item onclick="room.handleSelectUIMode('Photo')">
+                            <iron-icon></iron-icon>
+                            <paper-item-body two-lines title='{text key="cocreation+room_cc_datalet"}'>
+                                <div>Photo</div>
+                            </paper-item-body>
+                            </paper-item>
 
                         <paper-item id="info_menu_item" onclick="room.handleSelectUIMode('info')">
                             <iron-icon icon="info"></iron-icon>
@@ -535,7 +545,9 @@
                          <!-- Dataset -->
                         <paper-card id="spreadsheet" class="full_size_card" style="visibility:visible;" elevation="5">
                             <div class="screen_hidden_header">{text key="cocreation+room_dataset_tab_label"}</div>
-                            <iframe id="spreadsheet_container" src="{$spreadsheet}" style="height: 100%; width: 100%;"></iframe>
+                            <iframe id="spreadsheet_container" src="{$spreadsheet}" style="height: 100%; width: 100%;">
+
+                            </iframe>
                         </paper-card>
                         <!-- Metadata -->
                         <paper-card id="metadata" class="full_size_card" style="visibility:hidden;" elevation="5">

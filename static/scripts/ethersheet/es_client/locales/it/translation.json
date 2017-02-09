@@ -18,6 +18,7 @@
   "exportCSV": "Esporta come CSV",
 
   "add_geo_point" : "Aggiungi coordinate geografiche",
+  "add_new_photo" :"Aggiungi un'immagine",
 
   "sum_def": "SUM(num1,num2,...)",
   "sum_desc": "Returns the sum of one or more numbers",

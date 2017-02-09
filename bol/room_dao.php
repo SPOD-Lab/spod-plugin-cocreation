@@ -50,4 +50,6 @@ class COCREATION_BOL_RoomDao extends OW_BaseDao
     {
         return OW_DB_PREFIX . 'cocreation_room';
     }
+
+
 }

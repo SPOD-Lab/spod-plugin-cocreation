@@ -249,7 +249,7 @@ class COCREATION_BOL_Service
     public function addRoom($ownerId, $name, $subject,
                             $description, $from, $to,
                             $goal, $invitationText, $isOpen,
-                            $invitedUserArray, $roomType)
+                            $invitedUserArray, $roomType, $albumId)
     {
 
         $room = new COCREATION_BOL_Room();
@@ -264,6 +264,7 @@ class COCREATION_BOL_Service
         $room->invitationText = $invitationText;
         $room->isOpen         = $isOpen;
         $room->type           = $roomType;
+        $room->albumId        = $albumId;
 
         COCREATION_BOL_RoomDao::getInstance()->save($room);
 
@@ -312,6 +313,12 @@ class COCREATION_BOL_Service
         $roomMember->userId   = $userId;
 
         COCREATION_BOL_RoomMemberDao::getInstance()->save($roomMember);
+    }
+
+    public function getRoomIdByAlbumId($albumId){
+        $example = new OW_Example();
+        $example->andFieldEqual('albumId', $albumId);
+       return COCREATION_BOL_RoomDao::getInstance()->findIdByExample($example);
     }
 
     public function deleteMembersFromRoom($userId){
